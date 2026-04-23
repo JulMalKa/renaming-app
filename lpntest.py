@@ -4,7 +4,7 @@ import numpy as np
 import re
 import os
 
-folder = "/Users/juliamalolepsza/Downloads/stale_up/"
+folder = os.path.join(os.path.expanduser("~"), "Downloads")
 reader = easyocr.Reader(['pl', 'en'], gpu=False)
 
 

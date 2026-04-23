@@ -5,13 +5,13 @@ import re
 import os
 import cv2
 
-# folder = "/Users/juliamalolepsza/Downloads/"
+# folder = os.path.join(os.path.expanduser("~"), "Downloads")
 reader = easyocr.Reader(['pl', 'en'], gpu=False)
 vin_lpn_map = {}
 
 categories = {
     "soft" : ["POZWOLENIE" "CZASOWE", "CEL", "WYDANIA", "CZASOWEGO"],
-    "vp" : ["WSPÓLNOTA", "EUROPEJSKA", "DOWÓD", "REJESTRACYJNY", "DR", "DRBAU", "BAT", "DRIBAT", "BAR", "BAU", "DRVBAS"],
+    "vp" : ["WSPÓLNOTA", "EUROPEJSKA", "DOWÓD", "REJESTRACYJNY", "DRBAU", "BAT", "DRIBAT", "BAR", "BAU", "DRVBAS"],
     "ec" : ["CEMT-Nachweis", "CEMT", "ECMT"],
     "coc" : ["CO2", "CO", "mg/kWh", "THC"]
 }
@@ -53,7 +53,7 @@ def final_rename(folder, vin_lpn_map):
         if file.endswith(".pdf"):
             old_path = os.path.join(folder, file)
             vin_match = re.search(r'([0-9]{4})', file) 
-            vin = vin_match.group() if vin_match else "x"
+            vin = vin_match.group() if vin_match else "none"
             extension_match = re.search(r'_(VP_01|EC_02|COC_03)', file)
             if extension_match:
                 extension = extension_match.group()
@@ -111,7 +111,7 @@ def process_images(folder):
                     elif doc_category == "vp":
                         image = cv2.rotate(np.array(image), cv2.ROTATE_90_COUNTERCLOCKWISE)
                         all_text = read_image(image)
-                        break
+                        
 
                         
                 vin_match = re.search(r'\b([A-Z0-9]{12}[0-9]{5})(?:\([A-Z0-9]+\))?\b', all_text)
@@ -133,7 +133,7 @@ def process_images(folder):
             name_document(folder, pdf_path, doc_category, vin_last4)
 
 
-folder = "/Users/juliamalolepsza/Downloads/"
+folder = os.path.join(os.path.expanduser("~"), "Downloads")
 process_images(folder)
 
 print(vin_lpn_map)
